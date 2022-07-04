@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,12 +55,12 @@
       </li>
 
       <!-- Nav Item - Manajemen Account -->
-      <li class="nav-item  {{ \Str::is('account.*', Route::currentRouteName()) ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('account.index') }}">
+      <!--   <li class="nav-item  {{ \Str::is('account.*', Route::currentRouteName()) ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('account.index') }}">
           <i class="far fa-user"></i>
           <span>&nbsp; Manajemen Akun</span>
         </a>
-      </li>          
+      </li> -->         
         <li class="nav-item  {{ \Str::is('users.*', Route::currentRouteName()) ? 'active' : '' }}" href="{{ route('users.index') }}">
           <a class="nav-link" href="{{ route('users.index') }}">
             <i class="fa fa-users"></i>
@@ -80,9 +79,9 @@
               border: 0;
               font-weight: 900;"></i>
               </span>
-          <div id="collapseKriteria" class="collapse {{ \Str::is('guru.*', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('kelas.*', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('siswa.*', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('mapel.*', Route::currentRouteName()) ? 'show' : '' }}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div id="collapseKriteria" class="collapse {{ \Str::is('guru.', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('kelas.', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('siswa.', Route::currentRouteName()) ? 'show' : '' }} {{ \Str::is('mapel.', Route::currentRouteName()) ? 'show' : '' }}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
               <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Manajemen Data :</h6>              
+              <h6 class="collapse-header">Manajemen Data :</h6>
               <a class="collapse-item {{ \Str::is('guru.*', Route::currentRouteName()) ? 'active' : '' }}" href="{{ route('guru.index') }}"><i class="fas fa-users"></i> Guru</a>
               <a class="collapse-item {{ \Str::is('kelas.*', Route::currentRouteName()) ? 'active' : '' }}" href="{{ route('kelas.index') }}"><i class="fas fa-landmark"></i> Kelas</a>
               <a class="collapse-item {{ \Str::is('siswa.*', Route::currentRouteName()) ? 'active' : '' }}" href="{{ route('siswa.index') }}"><i class="fas fa-users"></i> Siswa</a>
@@ -95,7 +94,13 @@
             <i class="far fa-calendar-alt"></i>
             <span>&nbsp; Jadwal Pelajaran</span>
           </a>
-        </li>                     
+        </li>           
+        <li class="nav-item  {{ \Str::is('presensi.*', Route::currentRouteName()) ? 'active' : '' }}">
+          <a class="nav-link" href="{{ route('presensi.index') }}">
+            <i class="far fa-calendar-check"></i>
+            <span>&nbsp; Presensi Kehadiran</span>
+          </a>
+        </li>           
     </ul>
     <!-- Sidebar -->
 
@@ -149,7 +154,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Sistem Presensi MA</span>
+            <span>Copyright &copy; Sistem Presensi Aja</span>
           </div>
         </div>
       </footer>

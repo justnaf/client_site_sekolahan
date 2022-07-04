@@ -22,23 +22,25 @@
 <section class="container-fluid">
     <div class="card">
         @include ('includes.flash')
-        <div class="card-body">
-            <form role="form" method="post" action="{{ route('mapel.store') }}">
-                @csrf                
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Kode Mapel</label>
-                    <input type="text" class="form-control" name="kode_mapel" id="kode_mapel" placeholder="Kode Mapel" required>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Nama Mapel</label>
-                    <input type="text" class="form-control" name="nama_mapel" id="nama_mapel" placeholder="Nama Mapel" required>
-                </div>                  
-                <div class="card-body">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+            <div class="card-body">
+                <form role="form" method="post" action="{{ route ('mapel.store') }}">
+                @csrf
+                    <div class="form-group">
+                       <label for="exampleInput Password1">Kode Mapel</label> 
+                        <input type="text" class="form-control" name="kode_mapel" id="kode_mapel" 
+                                    placeholder="Kode Mapel" required>
+                    </div>
+                    <div class="form-group">
+                         <label for="exampleInputPassword1">Nama Mapel</label>
+                         <input type="text" class="form-control" name="nama_mapel" id="nama_mapel" 
+                                    placeholder="Nama Mapel" required>
+                     </div>
+                     <div class="card-body">
+                          <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 </section>
 @include ('includes.scripts')
 @endsection

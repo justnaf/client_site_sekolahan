@@ -28,10 +28,10 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="exampleInputPassword1">User ID</label>
-                        <select class="form-control" name="users_id" id="users_id" required>
-                            <option value="">User 1</option>
-                            <option value="">User 2</option>
-                            <option value="">User 3</option>
+                        <select class="form-control" name="user_id" id="users_id" required>
+                            @foreach ($users as $key => $user)
+                                <option value="{{ $user->id }}">{{ $user->username }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
@@ -44,12 +44,14 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Tempat Lahir</label>
-                        <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahir" placeholder="tempat lahir" required>
+                        <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahir" 
+                                            placeholder="tempat lahir" required>
                     </div>                    
                     <div class="form-group">
                         <label for="exampleInputPendidikanTerakhir">Tanggal Lahir</label>
                         <div class="input-group date col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <input type="text" class="form-control pull-right" id="datepicker" name="tgl_lahir" required>
+                            <input type="text" class="form-control pull-right" id="datepicker" 
+                                                name="tgl_lahir" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -61,7 +63,11 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPendidikanTerakhir">Nomor Telphone</label>
-                        <input id="phone_number" type="number" class="form-control form-control-user @error('phone_number') is-invalid @enderror" name="phone_number" id="phoneValidation" value="{{ old('phone_number') }}" placeholder="Nomor Telphone" required autocomplete="nik" style="-webkit-appearance: none;margin: 0;">
+                        <input id="phone_number" type="number" class="form-control form-control-user 
+                                            @error('phone_number') is-invalid @enderror" name="phone_number" 
+                                            id="phoneValidation" value="{{ old('phone_number') }}" 
+                                            placeholder="Nomor Telphone" required autocomplete="nik" 
+                                            style="-webkit-appearance: none;margin: 0;">
                         @error('phone_number')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -74,11 +80,13 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Pendidikan</label>
-                        <input type="text" class="form-control" name="pendidikan" id="pendidikan" placeholder="pendidikan" required>
+                        <input type="text" class="form-control" name="pendidikan" id="pendidikan" 
+                                            placeholder="pendidikan" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Alamat</label>
-                        <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10" placeholder="alamat" required></textarea>
+                        <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10" 
+                                            placeholder="alamat" required></textarea>
                     </div>
                     <div class="card-body">
                         <button type="submit" class="btn btn-primary">Simpan</button>

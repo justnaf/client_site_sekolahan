@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class SiswaController extends Controller
 {
@@ -13,7 +14,13 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+                            ->get(env("REST_API_ENDPOINT"). '/api/siswa');
+        $dataResponse = json_decode($response);
+
+        $this->data['siswas'] = $dataResponse->data;
+
+        return view('siswa.index', $this->data);
     }
 
     /**
@@ -23,7 +30,12 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+                    ->get(env("REST_API_ENDPOINT").'/api/kelas');
+        $dataResponse = json_decode($response);
+        $this->data['dataKelas'] = $dataResponse->data;
+
+        return view('siswa.create',$this->data);
     }
 
     /**
@@ -34,7 +46,22 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        // 
+        $ttl = explode('/',$request->tgl_lahir);
+        $request->merge([
+            'tgl_lahir' => $ttl[2].'-'.$ttl[0].'-'.$ttl[1]
+        ]);
+        $response = Http::withToken(session('tokenUser'))
+                        ->post(
+                            env("REST_API_ENDPOINT").'/api/siswa',
+                            $request->except('_token')
+                        );  
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+            return redirect()->route('siswa.index')->with('success','Data siswa berhasil ditambahkan!');
+        } else {
+            return redirect()->route('siswa.create')->with('validationErrors',$data->message);
+        }
     }
 
     /**
@@ -56,7 +83,27 @@ class SiswaController extends Controller
      */
     public function edit($id)
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+                            ->get(env("REST_API_ENDPOINT").'/api/siswa/'.$id);
+        $dataResponse = json_decode($response);
+
+        //dd($dataResponse);
+
+        $responseDataDependencies = Http::withToken(session()->get('tokenUser'))
+                            ->get(env("REST_API_ENDPOINT").'/api/kelas');
+        $dataDependencies = json_decode($responseDataDependencies);
+        
+        if ($dataResponse->status == true) {
+            $siswa = $dataResponse->data;
+            $ttl = explode('-',$siswa->tgl_lahir);
+            $siswa->tgl_lahir = $ttl[1].'/'.$ttl[2].'/'.$ttl[0];
+            $this->data['siswa'] = $siswa;
+            $this->data['dataKelas'] = $dataDependencies->data;
+            //dd($dataDependencies);
+            return view('siswa.edit',$this->data);
+        } else {
+            return redirect()->route('siswa.index')->with('danger','Data siswa tidak ditemukan!');
+        }
     }
 
     /**
@@ -68,7 +115,23 @@ class SiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 
+        $ttl = explode('/',$request->tgl_lahir);
+        $request->merge([
+            'tgl_lahir' => $ttl[2].'-'.$ttl[0].'-'.$ttl[1]
+        ]);
+
+        $response = Http::withToken(session('tokenUser'))
+                            ->put(
+                                env("REST_API_ENDPOINT").'/api/siswa/'.$id, 
+                                $request->except(['_token','_method'])
+                        );
+        $data = json_decode($response);
+        //dd($request);
+        if ($data->status == true) {
+            return redirect()->route('siswa.index')->with('success','Data siswa berhasil diubah!');
+        } else {
+            return redirect()->route('siswa.edit',$id)->with('validationErrors',$data->message);
+        }
     }
 
     /**
@@ -79,6 +142,14 @@ class SiswaController extends Controller
      */
     public function destroy($id)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+                   ->delete(env("REST_API_ENDPOINT").'/api/siswa/'.$id);
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+            return redirect()->route('siswa.index')->with('success','Data siswa berhasil dihapus!');
+        } else {
+            return redirect()->route('siswa.index')->with('ValidationErrors',$data->message);
+        }
     }
 }

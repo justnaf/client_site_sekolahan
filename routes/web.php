@@ -13,18 +13,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {    
-    return view('welcome');
+Route::get('/', function () {
+if (session()->has('userLogged')) {
+if (session()->get('userLogged') != null) {
+return redirect()->route('dashboard');
+}
+return redirect()->route('login');
+}
+return redirect()->route('login');
 });
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/not-found', 'HomeController@not_found')->name('notFound');
+Route::group(['middleware' => 'isHaveToken'], function()
+{
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 Route::resource('users', 'UserController');
-Route::resource('guru', 'AccountController');
+Route::resource('guru', 'GuruController');
 Route::resource('kelas', 'KelasController');
 Route::resource('siswa', 'SiswaController');
 Route::resource('mapel', 'MapelController');
-Route::resource('jadwal', 'JadwalController');    
+Route::resource('jadwal', 'JadwalController');
+Route::resource('presensi','PresensiController');
 Route::get('/account', 'AccountController@account')->name('account.index');
-Route::post('/account', 'AccountController@account_save')->name('account.store');   
+Route::post('/account', 'AccountController@account_save')->name('account.store');
+});

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Model\Kelas;
+use App\Model\Jadwal;
+use Illuminate\Support\Facades\Http;
 
 class KelasController extends Controller
 {
@@ -13,7 +16,13 @@ class KelasController extends Controller
      */
     public function index()
     {
-        return view('kelas.index');
+        $response = Http::withToken(session()->get('tokenUser'))
+                            ->get(env("REST_API_ENDPOINT").'/api/kelas');
+        $dataResponse = json_decode($response);
+
+        $this->data['dataKelas'] = $dataResponse->data;
+
+        return view('kelas.index',$this->data);
     }
 
     /**
@@ -23,7 +32,7 @@ class KelasController extends Controller
      */
     public function create()
     {
-        // 
+        return view('kelas.create'); 
     }
 
     /**
@@ -34,7 +43,18 @@ class KelasController extends Controller
      */
     public function store(Request $request)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+        ->post(env("REST_API_ENDPOINT").'/api/kelas',[
+            'kode_kelas' => $request->kode_kelas,
+            'nama_kelas' => $request->nama_kelas
+        ]);
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+        return redirect()->route('kelas.index')->with('success','Data kelas berhasil ditambahkan!');
+        } else {
+        return redirect()->route('kelas.create')->with('validationErrors',$data->message);
+        }
     }
 
     /**
@@ -56,7 +76,17 @@ class KelasController extends Controller
      */
     public function edit($id)
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+        ->get(env("REST_API_ENDPOINT").'/api/kelas/'.$id);
+        $dataResponse = json_decode($response);
+
+        //dd($dataResponse);
+        if ($dataResponse->status == true) {
+        $this->data['kelas'] = $dataResponse->data;
+        return view('kelas.edit',$this->data);
+        } else {
+        return redirect()->route('kelas.index')->with('danger','User tidak ditemukan!');
+        } 
     }
 
     /**
@@ -68,7 +98,19 @@ class KelasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+            ->put(
+                env("REST_API_ENDPOINT") . '/api/kelas/' . $id,
+                $request->except(['_token', '_method'])
+            );
+        //dd($response);
+
+        $data = json_decode($response);
+        if ($data->status == true) {
+            return redirect()->route('kelas.index')->with('success', 'Data kelas berhasil diubah!');
+        } else {
+            return redirect()->route('kelas.edit', $id)->with('validationErrors', $data->message);
+        }
     }
 
     /**
@@ -79,6 +121,14 @@ class KelasController extends Controller
      */
     public function destroy($id)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+                   ->delete(env("REST_API_ENDPOINT").'/api/kelas/'.$id);
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+            return redirect()->route('kelas.index')->with('success','Data kelas berhasil dihapus!');
+        } else {
+            return redirect()->route('kelas.index')->with('ValidationErrors',$data->message);
+        }
     }
 }

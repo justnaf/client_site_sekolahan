@@ -23,32 +23,38 @@
     <div class="card">
         @include ('includes.flash')
         <div class="card-body">
-            <form role="form" method="post" action="#" enctype="multipart/form-data">
+            <form role="form" method="post" action="{{ route('jadwal.update',$jadwals->id)}}" enctype="multipart/form-data">
                 @csrf
                 @method('put')
                 <div class="card-body">                    
                     <div class="form-group">
                         <label for="exampleInputJK">Kelas</label>
                         <select class="form-control" name="kelas_id" id="kelas_id" required>
-                            <option value="">kelas 1</option>
-                            <option value="">kelas 2</option>
-                            <option value="">kelas 3</option>
+                            @foreach ($dataKelas as $kelas)
+                            <option value="{{$kelas->id}}" @if($kelas->id == $jadwals->kelas_id)
+                                selected=""
+                                @endif> {{$kelas->nama_kelas}}
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputJK">Mata Pelajaran</label>
                         <select class="form-control" name="mapel_id" id="mapel_id" required>
-                            <option value="">mapel 1</option>
-                            <option value="">mapel 2</option>
-                            <option value="">mapel 3</option>
+                            @foreach ($dataMapel as $mapel)
+                            <option value="{{$mapel->id}}" @if($mapel->id == $jadwals->mapel_id)
+                                selected=""
+                                @endif> {{$mapel->nama_mapel}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputJK">Guru Pengampu</label>
                         <select class="form-control" name="guru_id" id="guru_id" required>
-                            <option value="">guru 1</option>
-                            <option value="">guru 2</option>
-                            <option value="">guru 3</option>
+                            @foreach ($dataGuru as $guru)
+                            <option value="{{$guru->id}}" @if($guru->id == $jadwals->guru_id)
+                                selected=""
+                                @endif> {{$guru->nama}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
@@ -65,7 +71,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Jam Pelajaran</label>
-                        <input type="text" class="form-control" name="jam_pelajaran" id="jam_pelajaran" value="#" required>
+                        <input type="text" class="form-control" name="jam_pelajaran" id="jam_pelajaran" value="{{$jadwals->jam_pelajaran}}" required>
                     </div>                                                         
                     <div class="card-body">
                         <button type="submit" class="btn btn-primary">Simpan</button>

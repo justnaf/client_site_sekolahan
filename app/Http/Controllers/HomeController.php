@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class HomeController extends Controller
 {
@@ -19,26 +21,47 @@ class HomeController extends Controller
      */    
     public function index()
     {
-        if (Auth::check()) {            
+        if (session()->get('userLogged') != null) {            
             return redirect()->route('dashboard');
         }
         return redirect()->route('login');
     }
 
     public function dashboard()
-    {        
-        if (Auth::user()->type == 'admin') {
-            $this->data['jmlGuru'] = Account::count();
-            $this->data['jmlKelas'] = Kelas::count();
-            $this->data['jmlSiswa'] = Siswa::count();
-            $this->data['jmlMapel'] = Mapel::count();
-            $this->data['jmlJadwal'] = Jadwal::where('is_active',1)->count();
-        }else {
-            $this->data['jmlKelas'] = Jadwal::where('guru_id',Auth::user()->guru->id)->count();
-            $this->data['jmlJadwal'] = Jadwal::where('guru_id',Auth::user()->guru->id)
-                                                ->where('is_active',1)
-                                                ->count();                
-        }
+    {          
+        $responseGuru = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/guru');
+        $dataResponseGuru = json_decode($responseGuru);
+        
+        $responseSiswa = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/siswa');
+        $dataResponseSiswa = json_decode($responseSiswa);
+
+        $responseKelas = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/kelas');
+        $dataResponseKelas = json_decode($responseKelas);
+
+        $responseMapel = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/mapel');
+        $dataResponseMapel = json_decode($responseMapel);
+
+        $responseJadwal = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/jadwal');
+        $dataResponseJadwal = json_decode($responseJadwal);
+
+        $siswacounted = collect($dataResponseSiswa->data)->count();
+        $gurucounted =  collect($dataResponseGuru->data)->count();
+        $kelascounted =  collect($dataResponseKelas->data)->count();
+        $mapelcounted =  collect($dataResponseMapel->data)->count();
+        $jadwalcounted =  collect($dataResponseJadwal->data)->count();
+        //dd($siswacounted);
+
+        $this->data ['gurucounted'] = $gurucounted;
+        $this->data ['siswacounted'] = $siswacounted;
+        $this->data ['kelascounted'] = $kelascounted;
+        $this->data ['mapelcounted'] = $mapelcounted;
+        $this->data ['jadwalcounted'] = $jadwalcounted;
+
         return view('admin.dashboard',$this->data);
     }
 

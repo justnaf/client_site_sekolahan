@@ -23,16 +23,16 @@
     <div class="card">
         @include ('includes.flash')
         <div class="card-body">
-            <form role="form" method="post" action="#">
+            <form role="form" method="post" action="{{ route('kelas.update',$kelas->id)}}">
                 @csrf                
                 @method('put')
                 <div class="form-group">
                     <label for="exampleInputPassword1">Kode Kelas</label>
-                    <input type="text" class="form-control" name="kode_kelas" id="kode_kelas" value="#" required>
+                    <input type="text" class="form-control" name="kode_kelas" id="kode_kelas" value="{{$kelas->kode_kelas}}" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Nama Kelas</label>
-                    <input type="text" class="form-control" name="nama_kelas" id="nama_kelas" value="#" required>
+                    <input type="text" class="form-control" name="nama_kelas" id="nama_kelas" value="{{$kelas->nama_kelas}}" required>
                 </div>                              
                 <div class="card-body">
                     <button type="submit" class="btn btn-primary">Simpan</button>

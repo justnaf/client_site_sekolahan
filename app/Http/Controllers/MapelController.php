@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Model\Mapel;
+use Illuminate\Support\Facades\Http;
 
 class MapelController extends Controller
 {
@@ -13,7 +15,13 @@ class MapelController extends Controller
      */
     public function index()
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/mapel');
+        $dataResponse = json_decode($response);
+
+        $this->data['mapels'] = $dataResponse->data;
+
+        return view('mapel.index', $this->data);
     }
 
     /**
@@ -23,7 +31,7 @@ class MapelController extends Controller
      */
     public function create()
     {
-        // 
+        return view('mapel.create');
     }
 
     /**
@@ -34,7 +42,18 @@ class MapelController extends Controller
      */
     public function store(Request $request)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+            ->post(env("REST_API_ENDPOINT") . '/api/mapel', [
+                'kode_mapel' => $request->kode_mapel,
+                'nama_mapel' => $request->nama_mapel
+            ]);
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+            return redirect()->route('mapel.index')->with('success', 'Data mapel berhasil ditambahkan!');
+        } else {
+            return redirect()->route('mapel.create')->with('validationErrors', $data->message);
+        }
     }
 
     /**
@@ -56,7 +75,18 @@ class MapelController extends Controller
      */
     public function edit($id)
     {
-        // 
+        $response = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/mapel/' . $id);
+        $dataResponse = json_decode($response);
+        //dd($dataResponse);
+        if ($dataResponse->status == true) {
+            $mapel = $dataResponse->data;
+            $this->data['mapel'] = $mapel;
+
+            return view('mapel.edit', $this->data);
+        } else {
+            return redirect()->route('mapel.index')->with('danger', 'Data mapel tidak ditemukan!');
+        }
     }
 
     /**
@@ -68,7 +98,19 @@ class MapelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+            ->put(
+                env("REST_API_ENDPOINT") . '/api/mapel/' . $id,
+                $request->except(['_token', '_method'])
+            );
+        //dd($response);
+
+        $data = json_decode($response);
+        if ($data->status == true) {
+            return redirect()->route('mapel.index')->with('success', 'Data mapel berhasil diubah!');
+        } else {
+            return redirect()->route('mapel.edit', $id)->with('validationErrors', $data->message);
+        }
     }
 
     /**
@@ -79,6 +121,14 @@ class MapelController extends Controller
      */
     public function destroy($id)
     {
-        // 
+        $response = Http::withToken(session('tokenUser'))
+                   ->delete(env("REST_API_ENDPOINT").'/api/mapel/'.$id);
+        $data = json_decode($response);
+
+        if ($data->status == true) {
+            return redirect()->route('mapel.index')->with('success','Data mapel berhasil dihapus!');
+        } else {
+            return redirect()->route('mapel.index')->with('ValidationErrors',$data->message);
+        }
     }
 }

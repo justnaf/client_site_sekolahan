@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\User;
 use Illuminate\Support\Facades\Http;
+use PhpParser\Node\Stmt\Echo_;
 
-class GuruController extends Controller
+class PresensiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,13 +15,42 @@ class GuruController extends Controller
      */
     public function index()
     {
-        $response = Http::withToken(session()->get('tokenUser'))
+       
+        $responseGuru = Http::withToken(session()->get('tokenUser'))
             ->get(env("REST_API_ENDPOINT") . '/api/guru');
-        $dataResponse = json_decode($response);
+        $dataResponseGuru = json_decode($responseGuru);
+        
+        $responseSiswa = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/siswa');
+        $dataResponseSiswa = json_decode($responseSiswa);
 
-        $this->data['dataGuru'] = $dataResponse->data;
+        $responseKelas = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/kelas');
+        $dataResponseKelas = json_decode($responseKelas);
 
-        return view('guru.index', $this->data);
+        $responseMapel = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/mapel');
+        $dataResponseMapel = json_decode($responseMapel);
+
+        $responseJadwal = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/jadwal');
+        $dataResponseJadwal = json_decode($responseJadwal);
+
+        $siswas = $dataResponseSiswa->data;
+        $gurus =  $dataResponseGuru->data;
+        $datakelas = $dataResponseKelas->data;
+        $datamapel =  $dataResponseMapel->data;
+        $datajadwal =  $dataResponseJadwal->data;
+
+        //dd($datamapel);
+
+        $this->data ['gurus'] = $gurus;
+        $this->data ['siswas'] = $siswas;
+        $this->data ['datakelas'] = $datakelas;
+        $this->data ['datamapel'] = $datamapel;
+        $this->data ['datajadwal'] = $datajadwal;
+
+        return view('presensi.index',$this->data);
     }
 
 
@@ -34,12 +61,42 @@ class GuruController extends Controller
      */
     public function create()
     {
-        $response = Http::withToken(session()->get('tokenUser'))
-            ->get(env("REST_API_ENDPOINT") . '/api/user-untuk-guru');
-        $dataResponse = json_decode($response);
-        $this->data['users'] = $dataResponse->data;
+       
+        $responseGuru = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/guru');
+        $dataResponseGuru = json_decode($responseGuru);
+        
+        $responseSiswa = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/siswa');
+        $dataResponseSiswa = json_decode($responseSiswa);
 
-        return view('guru.create', $this->data);
+        $responseKelas = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/kelas');
+        $dataResponseKelas = json_decode($responseKelas);
+
+        $responseMapel = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/mapel');
+        $dataResponseMapel = json_decode($responseMapel);
+
+        $responseJadwal = Http::withToken(session()->get('tokenUser'))
+            ->get(env("REST_API_ENDPOINT") . '/api/jadwal');
+        $dataResponseJadwal = json_decode($responseJadwal);
+
+        $siswas = $dataResponseSiswa->data;
+        $gurus =  $dataResponseGuru->data;
+        $datakelas = $dataResponseKelas->data;
+        $datamapel =  $dataResponseMapel->data;
+        $datajadwal =  $dataResponseJadwal->data;
+
+        //dd($datamapel);
+
+        $this->data ['gurus'] = $gurus;
+        $this->data ['siswas'] = $siswas;
+        $this->data ['datakelas'] = $datakelas;
+        $this->data ['datamapel'] = $datamapel;
+        $this->data ['datajadwal'] = $datajadwal;
+
+        return view('presensi.create', $this->data);
     }
 
     /**

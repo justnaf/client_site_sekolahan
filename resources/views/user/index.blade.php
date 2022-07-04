@@ -33,8 +33,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- looping --}}
-                </tbody>
+                    @if ($dataUsers != null)
+                    @foreach ($dataUsers as $key => $user)
+    <tr>
+        <td>{{ $key+1 }}</td>
+        <td>{{ $user->username }}</td>
+        <td>{{ $user->type }}</td>
+        <td class="text-center">
+            <a href="{{ route('users.edit', $user->id )}}">
+                <button class="btn btn-secondary" data-toogle="tooltip" data-placement="top" title="Ubah">
+                    <i class="fa fa-edit"></i>
+                </button>
+            </a>
+            <form id="delete-user-{{$user->id}}" action="/users/{{$user->id}}" method="post"
+                style="display: inline;">
+                @method('DELETE')
+                @csrf
+                <button class="btn btn-danger" data-toogle="tooltip" data-placement="top" title="Hapus">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </form>
+        </td>
+    </tr>
+    @endforeach
+    @endif
+</tbody>
             </table>
         </div>
     </div>
@@ -46,3 +69,4 @@
         });
     </script>
 @endsection
+

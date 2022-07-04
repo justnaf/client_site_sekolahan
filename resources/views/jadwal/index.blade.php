@@ -1,4 +1,4 @@
-@extends('layouts/main-admin')
+@extends('layouts.main-admin')
 
 @section('title', 'Jadwal')
 
@@ -29,13 +29,40 @@
                     <th width="40">NO</th>
                     <th>KELAS</th>
                     <th>MAPEL</th>
-                    <th>GURU PENGAMPU</th>
+                    <th>GURU</th>
                     <th>HARI</th>
+                    <th>JAM PELAJARAN</th>
                     <th width="120">AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- looping data jadwal --}}
+                    @if (count($jadwals))
+                        @foreach ($jadwals as $key => $jadwal)
+                        <tr>
+                            <td>{{ $key+1 }}</td>
+                            <td>{{ $jadwal->kelas_id}}</td>
+                            <td>{{$jadwal->mapel_id }}</td>
+                            <td>{{ $jadwal->guru_id }}</td>
+                            <td>{{ $jadwal->hari }}</td>
+                            <td>{{ $jadwal->jam_pelajaran }}</td>
+                            <td class="text-center">
+                              <a href="{{ route('jadwal.edit',$jadwal->id) }}">
+                                  <button class="btn btn-secondary" data-toogle="tooltip" data-placement="top" title="Ubah">
+                                      <i class="fa fa-edit"></i>
+                                  </button>
+                              </a>  
+                              <form id="delete-jadwal-{{$jadwal->id}}" action="/jadwal/{{$jadwal->id}}" method="post"
+                                style="display: inline;">
+                                    @method('DELETE')
+                                    @csrf
+                                    <button class="btn btn-danger" data-toogle="tooltip" data-placement="top" title="Hapus">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                     @endif
                 </tbody>
             </table>
         </div>
